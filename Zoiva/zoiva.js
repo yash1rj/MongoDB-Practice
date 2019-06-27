@@ -109,3 +109,69 @@ db.product_catalog.find({
         {price: {$gte: 55000}} 
     ]
 })
+
+// Update prodName of nosql distilled
+db.product_catalog.update(
+    {"prodName" : "nosql distilled"},
+    {$set: {"prodName" : "Nosql Distilled - Second Edition"}}
+)
+
+// Updating multiple documents
+// Changing genre(value is a document)
+db.product_catalog.updateMany(
+    {"genre.academic": "technical"},
+    {$set:{"genre.academic": "Computer Science Technology"}}
+)
+
+// upsert
+// upsert --> Optional --> If set to true, creates a new document when no document matches the query criteria. The default value is false, which does not insert a new document when no match is found.
+db.product_catalog.updateMany(
+    {"price": {$gt: 80000}, "manufacturer": "apple"},
+    {$set: {"prodName": "iphone 7 plus"}}, 
+    {upsert: true}
+)
+
+// From running the above query the price attribute is not added to the document beacause it contains comparison operator
+db.product_catalog.find({})
+
+// increase book price
+db.product_catalog.update(
+    {"ISBN" : 18407806},
+    {$inc: {price: 50}}
+)
+
+// $inc on a field not present in document
+db.product_catalog.update(
+    {"ISBN" : 18407806},
+    {$inc: {quantity: 10}}
+)
+
+// Trying out $unset operator
+db.product_catalog.update(
+    {"ISBN" : 18407806},
+    {$unset: {quantity: ""}}
+)
+
+// Updating arrays using $push
+db.product_catalog.update(
+    {prodId: 7000001},
+    {$push: {"colors": "white"}}
+)
+
+// Reduce price of book with prodId: 7000013 from 700 to 500
+db.product_catalog.update(
+    {prodId: 7000013},
+    {$inc: {price: -200}}
+)
+
+// Adding more colors to iphone 7 in one query
+db.product_catalog.update(
+    {prodId: 7000001},
+    {$push: {colors: {$each: ["midnight blue", "red"]}}}
+)
+
+// Removing product from inventory
+db.product_catalog.deleteOne({prodName: "Java for Dummies"})
+
+// View collection
+db.product_catalog.find({})
