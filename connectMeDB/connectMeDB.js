@@ -42,3 +42,26 @@ db.user_profiles.find({
     ]},
     {_id: 0, UserId: 1, Name: 1}
 )
+
+// Updating profile Info
+db.user_profiles.update(
+    {UserId: "amy01"},
+    {$set: {Siblings: ["Luke James", "Anna James", "Sharon James"], University: "Anna University", Age: 21}}
+)
+
+// Updating profile Info
+db.user_profiles.update(
+    {UserId: "jimmy999"},
+    {$set: {University: "University of Colorado", Age: 42, "Favorite Football Team": "Manchester United F.C"}}
+)
+
+// Deleting all profiles whose age is 40 and located in "Mexico"
+db.user_profiles.deleteMany({
+    $and: [
+        {Age: {$gt: 40}},
+        {Location: "Mexico"}
+    ]
+})
+
+// View the collection
+db.user_profiles.find({})
