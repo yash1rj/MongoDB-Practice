@@ -175,3 +175,186 @@ db.product_catalog.deleteOne({prodName: "Java for Dummies"})
 
 // View collection
 db.product_catalog.find({})
+
+// Inserting more documents
+db.product_catalog.insert([{
+        "manufacturer": "apple",
+        "price": 20000,
+        "display": '4.7 inch Retina HD',
+        "model": 'iPhone 6S',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "samsung",
+        "price": 15000,
+        "android": 'Oreo',
+        "model": 'Note 4',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "samsung",
+        "price": 5450,
+        "processor": 'Exynos 8895 Octa Core',
+        "model": 'Galaxy S8',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "apple",
+        "price": 50000,
+        "display": '5.5 inch Retina HD',
+        "model": 'iPhone 6 plus',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "samsung",
+        "price": 10570,
+        "processor": 'Exynos 8890',
+        "model": 'Galaxy S7 Edge',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "lenovo",
+        "price": 10000,
+        "android": 'Oreo',
+        "model": 'K8 Plus',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "lenovo",
+        "price": 9920,
+        "battery": 4000,
+        "model": 'K6 Note',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "lenovo",
+        "price": 10000,
+        "material": 'metal unibody',
+        "model": 'Vibe K5 Note',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "apple",
+        "price": 19999,
+        "camera": '12 MP',
+        "model": 'iPhone SE',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "mi",
+        "price": 20000,
+        "android": 'Oreo',
+        "model": 'Max 2',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "mi",
+        "price": 33000,
+        "camera": '12 MP',
+        "model": 'Mix 2',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "mi",
+        "price": 15000,
+        "memory": '64 GB',
+        "model": 'A1',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "mi",
+        "price": 15000,
+        "display": '5 inch HD',
+        "model": '4i',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "moto",
+        "price": 10000,
+        "android": 'Nougat',
+        "model": 'E4 Plus',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "moto",
+        "price": 7000,
+        "ram": '2 GB',
+        "model": 'C Plus',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "samsung",
+        "price": 14000,
+        "ram": '4 GB',
+        "model": 'Galaxy On Max',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "honor",
+        "price": 18000,
+        "battery": 3340,
+        "model": '9i',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    },
+    {
+        "manufacturer": "google",
+        "price": 45000,
+        "android": 'Oreo',
+        "model": 'Pixel 2',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        }
+    }
+])
