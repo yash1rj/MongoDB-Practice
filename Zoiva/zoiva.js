@@ -516,3 +516,99 @@ db.product_catalog.createIndex(
 db.product_catalog.find(
     {"price": {$gte: 5000, $lte: 20000}}
 ).explain("executionStats")
+
+db.product_catalog.insert([
+    {
+        "manufacturer": "OPPO",
+        "price": 20000,
+        "display": '6 inch',
+        "model": 'F5',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        },
+        "camera": '16 MP',
+        "android": 'Nougat'
+    },
+    {
+        "manufacturer": "OPPO",
+        "price": 14000,
+        "display": '5.2 inch',
+        "model": 'A57',
+        "categories": {
+            'main': 'electronics',
+            'sub': 'smartphones'
+        },
+        "camera": '13 MP',
+        "memory": '32GB'
+    }
+])
+
+// View collection
+db.product_catalog.find({})
+
+// Retrieve manufacturer, model and price of all smartphones that cost less than 10k 
+db.product_catalog.find(
+    {
+        "categories.sub": "smartphones", 
+        "price": {$lt: 10000}
+    },
+    {_id: 0, "manufacturer": 1, "model": 1, "price": 1}
+)
+
+// Retrieve manufacturer and model of all smartphones running android Oreo
+db.product_catalog.find(
+    {
+        "categories.sub": "smartphones", 
+        "android": "Oreo"
+    },
+    {_id: 0, "manufacturer": 1, "model": 1}
+)
+
+// Retrieve manufacturer and model of all smartphones that have some display specs listed
+db.product_catalog.find(
+    {
+        "categories.sub": "smartphones", 
+        "display": {$exists: true}
+    },
+    {_id: 0, "manufacturer": 1, "model": 1}
+)
+
+// update "Max 2" smartphone
+db.product_catalog.update(
+    {"model" : "Max 2"},
+    {$set: {"manufacturer": "Mi", "memory": ["32 GB", "64 GB", "128 GB"], "price": 15000}}
+)
+
+db.product_catalog.find({"model" : "Max 2"})
+
+// update "Pixel 2" smartphone
+db.product_catalog.update(
+    {"model" : "Pixel 2"},
+    {$set: {"memory": ["32 GB", "64 GB", "128 GB"], "colors": ["CLearly White", "Jet Black", "Very Silver"]}}
+)
+
+db.product_catalog.find({"model" : "Pixel 2"})
+
+// Store first five smartphones when sorted by model name into sortedByModel collection 
+db.product_catalog.aggregate(
+    {$sort: {"model": 1}}, 
+    {$limit: 5},
+    {$out: "sortedByModel"
+)
+
+// Store smartphones of price less than 10k in under10k collection 
+db.product_catalog.aggregate(
+    {$match: {"price": {$lt: 10000}}}, 
+    {$out: "under10k"}
+)
+
+db.under10k.find()
+
+// Store smartphones of price more than 15k in above15k collection 
+db.product_catalog.aggregate(
+    {$match: {"price": {$gte: 15000}}}, 
+    {$out: "above15k"}
+)
+
+db.above15k.find()
