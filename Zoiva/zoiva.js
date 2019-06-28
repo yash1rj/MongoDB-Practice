@@ -358,3 +358,161 @@ db.product_catalog.insert([{
         }
     }
 ])
+
+// View collection
+db.product_catalog.find({})
+
+// Count smartphones
+db.product_catalog.count({"categories.sub": "smartphones"})
+
+// Distinct manufacturers
+db.product_catalog.distinct("manufacturer")
+
+// Aggregate totalPrice of smartphones for each manufacturer
+db.product_catalog.aggregate([
+    {$project: {"_id": 0, "price": 1, "manufacturer": 1}},
+    {$group: {_id: "$manufacturer", totalPrice: {$sum: "$price"}}}
+])
+
+// Aggregate count of products by each manufacturer
+db.product_catalog.aggregate([
+    {$group: { _id: "$manufacturer", totalProducts: {$sum: 1}}}
+])
+
+// Make a new collection of 5 cheapeast mobile
+db.product_catalog.aggregate([
+    {$match: {"categories.sub": "smartphones"}},
+    {$sort: {"price": 1},
+    {$limit: 5},
+    {$out: "fiveCheapestMobiles"}
+])
+
+// View the made collection
+db.fiveCheapestMobiles.find()
+
+// Find Lenovo phones of price less than 10k
+db.product_catalog.aggregate([
+    {$match: {$and: [{"manufacturer": "lenovo"}, {"price": {$lt: 10000}}]}    
+])
+
+// Aggregate totalPrice and count of smartphones for each manufacturer
+db.product_catalog.aggregate([
+    {$project: {"_id": 0, "price": 1, "manufacturer": 1}},
+    {$group: {
+        _id: "$manufacturer", 
+        totalPrice: {$sum: "$price"}, 
+        totalCount: {$sum: 1}}
+    }
+])
+
+// Retrieve top 10 most expensive mobile in a new collection
+db.product_catalog.aggregate([
+    {$match: {"categories.sub": "smartphones"}}, 
+    {$sort: {"price": -1}},
+    {$limit: 10},
+    {$out: "expensiveTen"}
+])
+
+// view the expensive mobiles collection
+db.expensiveTen.find()
+
+// Retrieve ten least expensive mobiles and store in topTenCheapestMobiles collection
+db.product_catalog.aggregate([
+    {$match: {"categories.sub": "smartphones"}},
+    {$sort: {"price": 1},
+    {$limit: 10},
+    {$out: "topTenCheapestMobiles"}
+])
+
+// view the topTenCheapestMobiles collection
+db.topTenCheapestMobiles.find()
+
+// Retrieve mobiles manufactured by MI and store only the manufacturer and model of phone
+db.product_catalog.aggregate([
+    {$project: {"_id": 0, "manufacturer":1, "model": 1}},
+    {$match: {"manufacturer": "mi"}},
+    {$out: "MIMobiles"}
+])
+
+// View MI mobile collection
+db.MIMobiles.find()
+
+// Retrieve mobiles manufactured by samsung and store only the manufacturer and model of phone
+db.product_catalog.aggregate([
+    {$project: {"_id": 0, "manufacturer":1, "model": 1}},
+    {$match: {"manufacturer": "samsung"}},
+    {$out: "SamsungMobiles"}
+])
+
+// View MI mobile collection
+db.SamsungMobiles.find()
+
+
+// The performance for queries based on indexed and non-indexed fields can be analyzed using explain("executionStats")
+
+// Query retrieve products in price range of 5k to 20k -- without the price field being indexed
+db.product_catalog.find(
+    {"price": {$gte: 5000, $lte: 20000}}
+).explain("executionStats")
+
+// Here, query returns 15 documents out of the 22 scanned
+
+// Indexes can reduce the no. of docs scanned and improve the performance
+
+// Creating index on a single field  - price
+db.product_catalog.createIndex({price: -1})
+
+// Here, we are creating a descending index on the price field
+
+// A descending index sorts values of that column in decending order. An ascending index does just the opposite
+
+// Let's see now how the performance is affected by doing so
+// Query retrieve products in price range of 5k to 20k -- the price field being indexed
+db.product_catalog.find(
+    {"price": {$gte: 5000, $lte: 20000}}
+).explain("executionStats")
+
+// Now, the query scans only the 15 documents which matches our specified criteria
+
+// Compound index
+// For retrieving products with price less than 5k and rating is 4
+// In this case, it may not be sufficient to create an index on just one field. Our query needs to filter multiple criteria
+// Example:  db.product_catalog.createIndex({"price": 1,  rating: -1})
+
+// Text Indexes
+// Customers would like to perform text based searches. For eg. search for either the main category or more specifically the sub-category
+
+// creating a text index on the categories field
+db.product_catalog.createIndex({categories: "text"})
+
+// Now, to really optimize the retrieval of documents using the text index :
+// the $text operator is used to perform text search on the indexed field to retrieve the details of the smartphones
+db.product_catalog.find({$text: { $search: "smartphones" }})
+
+// Retrive all indexes of product_catalog collection
+db.product_catalog.getIndexes()
+
+// drop index
+db.product_catalog.dropIndex("categories_text")
+// or
+db.product_catalog.dropIndex({categories: "text"})
+
+// Delete all indexes
+db.product_catalog.dropIndexes()
+
+// Custom naming of index
+// 15/22
+db.product_catalog.find(
+    {"price": {$gte: 5000, $lte: 20000}}
+).explain("executionStats")
+
+db.product_catalog.createIndex(
+    {"price": -1},
+    {name: "price_index_desc"}
+)
+
+// After indexing
+// 15/15
+db.product_catalog.find(
+    {"price": {$gte: 5000, $lte: 20000}}
+).explain("executionStats")
