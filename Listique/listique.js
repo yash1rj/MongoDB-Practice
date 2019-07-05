@@ -261,17 +261,66 @@ db.products.insert({
 db.products.find({})
 
 // Retrieve all the products that have a rating above 4.5.
+db.products.find({"pRating": {$gt: 4.5}})
 
 // Retrieve all products categorized as furniture with price less than 10000.
+db.products.find({"pCategory": "Furniture", "price": {$lt: 10000}})
 
 // Retrieve all products with price range between 1600 and 3500
+db.products.find({"price": {$gte: 1600, $lte: 3500}})
 
-// update
+// updating few documents
+
+// update RAM and memory detailsof product 1001
+db.products.updateOne({"_id": 1001},{$set:{"specification" : {"camera":"13MP", "memory":"64GB", "RAM":"4GB"}, "price": 10599}})
+db.products.find({"_id": 1001})
+
+// Remove sizes 4 and 5 from product 1007 specification field
+db.products.updateOne({"_id": 1007},{$pull: { "specification.sizes": { $in: [ 4, 5 ] }}, $set: {"price": 2299}})
+db.products.find({"_id": 1007})
+
+// Update rating and price of product 1015
+db.products.updateOne({"_id": 1015},{$set: {"price": 18999, "pRating": 4.9}})
+db.products.find({"_id": 1015})
+
+// Add sizes to product 1019 XL,XXl and XS
+db.products.updateOne({"_id": 1019},{$push: {"specification.size": {$each: ["XL", "XXL", "XS"]}}})
+db.products.find({"_id": 1019})
 
 // Create an ascending index on the category field called p_category_asc.
+db.products.createIndex(
+    {"pCategory": 1},
+    {name: "p_category_asc"}
+)
 
 // Create 2 new collections called ElectronicProducts and FurnitureCatalog, that contain only products from that respective category and the sum of all the respective product prices.
+db.products.aggregate(
+    {$match: {"pCategory": "Electronics"}}, 
+    {$out: "ElectronicProducts"}
+)
+
+db.ElectronicProducts.find()
+
+db.products.aggregate(
+    {$match: {"pCategory": "Furniture"}}, 
+    {$out: "FurnitureCatalog"}
+)
+
+db.FurnitureCatalog.find()
 
 // Create a new collection called TopFive, that contains the first five products from the catalog when sorted by rating.
+db.products.aggregate(
+    {$sort: {"pRating": 1}}, 
+    {$limit: 5},
+    {$out: "TopFive"
+)
+
+db.TopFive.find()
 
 // Create a new collection called BudgetBuys, that contains products that cost less than 9000.
+db.products.aggregate(
+    {$match: {"price": {$lt: 9000}}}, 
+    {$out: "BudgetBuys"}
+)
+
+db.BudgetBuys.find()
